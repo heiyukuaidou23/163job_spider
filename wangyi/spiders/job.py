@@ -1,6 +1,7 @@
 import scrapy
 from wangyi.items import WangyiItem
 
+
 class JobSpider(scrapy.Spider):
     name = "job"
     allowed_domains = ["163.com"]
@@ -22,7 +23,14 @@ class JobSpider(scrapy.Spider):
                 item['address'] = tr.xpath('./td[5]/text()').extract_first()
                 item['num'] = tr.xpath('./td[6]/text()').extract_first().strip()
                 item['date'] = tr.xpath('./td[7]/text()').extract_first()
-                yield item
+                # yield item
+
+                # 3.构建详情页面的请求
+                yield scrapy.Request(
+                    url=item['link'],
+                    callback=self.parse_detail,
+                    meta={'item': item}
+                )
         # 2.进行翻页操作
         part_url = response.xpath('/html/body/div[2]/div[2]/div[2]/div/a[last()]/@href').extract_first()
         # 判断终止条件
@@ -32,3 +40,11 @@ class JobSpider(scrapy.Spider):
                 url=next_url,
                 callback=self.parse
             )
+
+    def parse_detail(self, response):
+        # 将meta传参获取
+        item = response.meta['item']
+        # 提取剩余的字段
+        item['duty'] = response.xpath('/html/body/div[2]/div[2]/div[1]/div/div/div[2]/div[1]/div/text()').extract()
+        item['require'] = response.xpath('/html/body/div[2]/div[2]/div[1]/div/div/div[2]/div[2]/div/text()').extract()
+        yield item

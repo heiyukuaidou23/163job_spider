@@ -16,3 +16,7 @@ class WangyiItem(scrapy.Item):
     address = scrapy.Field()
     num = scrapy.Field()
     date = scrapy.Field()
+    #详情
+    duty = scrapy.Field()
+    require = scrapy.Field()
+
