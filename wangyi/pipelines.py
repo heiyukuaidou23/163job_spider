@@ -8,19 +8,42 @@
 from itemadapter import ItemAdapter
 import json
 
-class WangyiPipeline:
 
-    def __init__(self):
-        self.file = open('wangyi_job.json', 'w')
+class WangyiPipeline(object):
+
+    def open_spider(self, spider):
+        if spider.name == 'job':
+            self.file = open('wangyi_job.json', 'w')
 
     def process_item(self, item, spider):
-        item = dict(item)
-        # 1.将字典数据序列化
-        job_data = json.dumps(item, ensure_ascii=False) + ',\n'
-        # 2.将数据写入文件
-        self.file.write(job_data)
-        return item
+        if spider.name == 'job':
+            item = dict(item)
+            # 1.将字典数据序列化
+            job_data = json.dumps(item, ensure_ascii=False) + ',\n'
+            # 2.将数据写入文件
+            self.file.write(job_data)
+            return item
+
+    def close_spider(self, spider):
+        if spider.name == 'job':
+            self.file.close()
 
 
-    def __del__(self):
-        self.file.close()
+class WangyiSimplePipeline(object):
+
+    def open_spider(self, spider):
+        if spider.name == 'job_simple':
+            self.file = open('wangyi_simple_job.json', 'w')
+
+    def process_item(self, item, spider):
+        if spider.name == 'job_simple':
+            item = dict(item)
+            # 1.将字典数据序列化
+            job_data = json.dumps(item, ensure_ascii=False) + ',\n'
+            # 2.将数据写入文件
+            self.file.write(job_data)
+            return item
+
+    def close_spider(self, spider):
+        if spider.name == 'job_simple':
+            self.file.close()
