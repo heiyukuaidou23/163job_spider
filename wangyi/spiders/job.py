@@ -10,6 +10,7 @@ class JobSpider(scrapy.Spider):
     def parse(self, response):
         # 1.提取一页的数据
         trs = response.xpath('//*[@class="position-tb"]/tbody/tr')
+        print(response.request.headers['User-Agent'])
         # print(len(trs))
         for num, tr in enumerate(trs):
             # 设置一个过滤条件
